@@ -55,14 +55,15 @@ const QuizForm = () => {
   ];
 
   const handleSubmit = async (values) => {
-    const apiUrl = "https://your-api-url.com/quizzes";
     const toast = useToast();
 
     // Transforming the state to the required JSON structure
     const questionsArray = values.questions.map((question, index) => ({
       questionId: String(index + 1), // Assuming questionId is simply the index + 1
       questionText: question.questionText,
-      imageUrl: question.imageUrl,
+      imageUrl:
+        "https://image.pollinations.ai/prompt/" +
+        question.imageText.replace(/\s+/g, "-"),
       options: question.options.map((option, optionIndex) => ({
         optionId: String(optionIndex + 1), // Assuming optionId is simply the index + 1
         optionText: option.optionText,
@@ -71,9 +72,10 @@ const QuizForm = () => {
     }));
 
     try {
-      const response = await post(apiUrl, {
+      const response = await post("/quizzes", {
         quizName: values.quizName,
         questions: questionsArray,
+        totalQuestions: values.questions.length,
       });
 
       if (response) {

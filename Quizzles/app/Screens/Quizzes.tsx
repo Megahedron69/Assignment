@@ -1,15 +1,18 @@
-import { type FC } from "react";
+import { type FC, useState, useEffect } from "react";
 import {
   View,
   TouchableOpacity,
   StyleSheet,
   ScrollView,
   Text,
+  ActivityIndicator,
 } from "react-native";
 import Svg, { Path, Defs, LinearGradient, Stop } from "react-native-svg";
 import { AntDesign } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { SheetManager } from "react-native-actions-sheet";
+import { get } from "../Utils/networkreq";
+
 const gradientColors = [
   { light: "#FFA500", dark: "#FF8C00" }, // Orange
   { light: "#ADD8E6", dark: "#0000FF" }, // Blue
@@ -18,13 +21,11 @@ const gradientColors = [
   { light: "#FFB6C1", dark: "#FF1493" }, // Pink
 ];
 
-// Function to get the linear gradient colors based on the index
 const getGradient = (index: number) => {
   const color = gradientColors[index % gradientColors.length];
   return color;
 };
 
-// Pentagon Path Generator
 const roundedPentagonPath = (size: number, cornerRadius = 5) => {
   const angle = (2 * Math.PI) / 5;
   const path = [];
@@ -46,18 +47,21 @@ const roundedPentagonPath = (size: number, cornerRadius = 5) => {
   return path.join(" ");
 };
 
-// Pentagon Button Component
 type PentagonBut = {
   index: number;
+  quiz: any | undefined;
 };
-const PentagonButton: FC<PentagonBut> = ({ index }) => {
+const PentagonButton: FC<PentagonBut> = ({ index, quiz }) => {
   const gradient = getGradient(index);
   const navigation = useNavigation();
   return (
     <TouchableOpacity
       style={styles.container}
       onPress={() => {
-        navigation.navigate("Quiz", { quizId: `0${index + 1}` });
+        navigation.navigate("Quiz", {
+          quizId: quiz.quizID,
+          quizName: quiz.quizName,
+        }); // Pass quizId and quizName
       }}
     >
       <Svg height="160" width="160">
@@ -81,12 +85,10 @@ const PentagonButton: FC<PentagonBut> = ({ index }) => {
         />
       </Svg>
 
-      {/* Stars positioned at the top points of the pentagon */}
       <AntDesign name="star" size={32} style={[styles.icon, styles.topLeft]} />
       <AntDesign name="star" size={32} style={[styles.icon, styles.top]} />
       <AntDesign name="star" size={32} style={[styles.icon, styles.topRight]} />
 
-      {/* Text inside the pentagon */}
       <View style={styles.textContainer}>
         <Text style={styles.quizText}>Quiz</Text>
         <Text style={styles.quizNumber}>{`0${index + 1}`}</Text>
@@ -95,15 +97,15 @@ const PentagonButton: FC<PentagonBut> = ({ index }) => {
   );
 };
 
-// Pentagon List Component
 type PentagonList = {
-  numberOfPentagons: number;
+  numberOfPentagons: number | undefined;
+  quizzes: any[] | null;
 };
-const PentagonList: FC<PentagonList> = ({ numberOfPentagons }) => {
+const PentagonList: FC<PentagonList> = ({ numberOfPentagons, quizzes }) => {
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer}>
       {Array.from({ length: numberOfPentagons }, (_, index) => (
-        <PentagonButton key={index} index={index} />
+        <PentagonButton key={index} index={index} quiz={quizzes[index]} />
       ))}
       <TouchableOpacity
         style={styles.plusButton}
@@ -117,8 +119,28 @@ const PentagonList: FC<PentagonList> = ({ numberOfPentagons }) => {
   );
 };
 
-// Main Quizzes Component
 const Quizzes = ({ navigation }) => {
+  const [loading, setLoading] = useState<boolean>(true);
+  const [err, setErr] = useState<boolean>(false);
+  const [quizzes, setQuizzes] = useState<any[] | null>(null);
+  useEffect(() => {
+    const fet = async () => {
+      setLoading(true);
+      try {
+        const resp = await get("/quizzes");
+        if (resp?.status) {
+          setQuizzes(resp.quiz);
+          setErr(false);
+        }
+      } catch (err) {
+        setErr(true);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fet();
+  }, []);
+
   return (
     <View style={styles.mainContainer}>
       <View style={styles.header}>
@@ -134,7 +156,18 @@ const Quizzes = ({ navigation }) => {
           <Text style={styles.headerText}>Quizzes</Text>
         </View>
       </View>
-      <PentagonList numberOfPentagons={5} />
+      {err ?? (
+        <View style={styles.specialContainer}>
+          <AntDesign name="warning" size={64} color="gray" />
+        </View>
+      )}
+      {loading ? (
+        <View style={styles.specialContainer}>
+          <ActivityIndicator size="large" color="#37e9bb" />
+        </View>
+      ) : (
+        <PentagonList numberOfPentagons={quizzes?.length} quizzes={quizzes} />
+      )}
     </View>
   );
 };
@@ -153,6 +186,11 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingHorizontal: 20,
     backgroundColor: "#1f1147",
+  },
+  specialContainer: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
   },
   backButton: {
     backgroundColor: "#32167c",

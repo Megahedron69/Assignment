@@ -9,6 +9,7 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import { post } from "../Utils/networkreq";
 import { useToast } from "react-native-toast-notifications";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 type ModalProps = {
   closeModal: () => void;
 };
@@ -21,13 +22,22 @@ const ModalComp: FC<ModalProps> = ({ closeModal }) => {
 
   const handlePlayPress = async () => {
     try {
-      const response = await post("/createUser", { userName: text });
-      toast.show(response.message, { type: "success" });
+      await post("/createUser", { userName: text });
+      toast.show(`Hello ${text}`, {
+        type: "success",
+        placement: "bottom",
+        duration: 2000,
+        animationType: "zoom-in",
+      });
+      await AsyncStorage.setItem("userName", text);
       navigation.navigate("Quizzes");
     } catch (error: any) {
       // Show error in toast
       toast.show(error.response?.data?.message || "Error creating user", {
         type: "danger",
+        placement: "bottom",
+        duration: 4000,
+        animationType: "zoom-in",
       });
     }
   };

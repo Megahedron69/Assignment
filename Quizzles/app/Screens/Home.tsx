@@ -10,11 +10,11 @@ import {
 } from "react-native";
 import ModalComp from "../Components/Modal";
 const image = require("../../assets/splash.png");
-
+import { useNavigation } from "@react-navigation/native";
 const Home: FC = () => {
   const opacity = useRef(new Animated.Value(0)).current;
   const translateY = useRef(new Animated.Value(50)).current;
-
+  const navigation = useNavigation();
   useEffect(() => {
     Animated.timing(opacity, {
       toValue: 1,
@@ -69,7 +69,12 @@ const Home: FC = () => {
             <TouchableOpacity style={styles.playNowButton} onPress={openModal}>
               <Text style={styles.playNowText}>Play Now</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.aboutButton}>
+            <TouchableOpacity
+              style={styles.aboutButton}
+              onPress={() => {
+                navigation.navigate("Leaderboard");
+              }}
+            >
               <Text style={styles.aboutText}>Leaderboards</Text>
             </TouchableOpacity>
           </Animated.View>

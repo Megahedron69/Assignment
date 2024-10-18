@@ -1,12 +1,60 @@
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import React from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ActivityIndicator,
+} from "react-native";
+import { type FC, useState, useEffect } from "react";
 import QuestionModal from "../Components/QuestionModal";
 import { AntDesign } from "@expo/vector-icons";
-import { resp } from "../Utils/dummyResponse";
+
+import { get } from "../Utils/networkreq";
 const QuizScreen = ({ route, navigation }) => {
   const { quizId } = route.params;
-  const { quizID, questions } = resp;
-  const quizQuestions = quizID === parseInt(quizId, 10) ? questions : [];
+  const [quizQuestions, setQuizQuestions] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    const fetchQuizQuestions = async () => {
+      try {
+        const response = await get(`/quizzes/${quizId}`);
+        if (response?.status) {
+          setQuizQuestions(response.questions);
+          setError(false);
+        } else {
+          setError(true);
+        }
+      } catch (err) {
+        setError(true);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchQuizQuestions();
+  }, [quizId]);
+
+  if (loading) {
+    return (
+      <View style={styles.centered}>
+        <ActivityIndicator size="large" color="#37e9bb" />
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View style={styles.centered}>
+        <AntDesign name="warning" size={64} color="red" />
+        <Text style={styles.errorText}>
+          Error fetching quiz data. Please try again.
+        </Text>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -23,7 +71,7 @@ const QuizScreen = ({ route, navigation }) => {
         </View>
       </View>
       <View style={{ flex: 1 }}>
-        <QuestionModal questions={quizQuestions} quizID={quizID} />
+        <QuestionModal questions={quizQuestions} quizID={quizId} />
       </View>
     </View>
   );
@@ -58,6 +106,16 @@ const styles = StyleSheet.create({
     fontSize: 32,
     fontWeight: "600",
     color: "#37e9bb",
+  },
+  centered: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  errorText: {
+    fontSize: 18,
+    color: "red",
+    marginTop: 10,
   },
 });
 

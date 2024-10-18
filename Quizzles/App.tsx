@@ -34,7 +34,12 @@ export default function App() {
   return (
     <View style={styles.container}>
       <GestureHandlerRootView style={{ flex: 1 }}>
-        <ToastProvider>
+        <ToastProvider
+          successColor="#37e9bb"
+          dangerColor="#f87171"
+          swipeEnabled
+          style={{ borderRadius: 30 }}
+        >
           <NavigationContainer>
             <SheetProvider>
               <Stack.Navigator initialRouteName="Home">

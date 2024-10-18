@@ -1,12 +1,81 @@
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import { type FC } from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  ActivityIndicator,
+} from "react-native";
+import { type FC, useEffect, useState } from "react";
 import { AntDesign } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import ConfettiCannon from "react-native-confetti-cannon";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { post } from "../Utils/networkreq";
 
 const ResultComp: FC = ({ route }) => {
-  const { score, totalQues } = route.params;
+  const { score, totalQues, quizId } = route.params;
+  const [loading, setLoading] = useState<boolean>(true);
+  const [err, setErr] = useState<boolean>(false);
+  const [finalScore, setFinalScore] = useState<number | null>(null);
   const navigation = useNavigation();
+  useEffect(() => {
+    const fn = async () => {
+      try {
+        setLoading(true);
+        const userName = await AsyncStorage.getItem("userName");
+        const resp = await post(`/quizzes/${quizId}/submit`, {
+          userName,
+          score,
+        });
+        setFinalScore(resp?.score);
+      } catch {
+        setErr(true);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fn();
+  }, [quizId, score]);
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#37e9bb" />
+        <Text style={styles.loadingText}>Loading...</Text>
+      </View>
+    );
+  }
+
+  if (err) {
+    return (
+      <View style={styles.errorContainer}>
+        <AntDesign name="exclamationcircleo" size={64} color="red" />
+        <Text style={styles.errorText}>
+          Something went wrong. Please try again later.
+        </Text>
+        <TouchableOpacity
+          style={styles.retryButton}
+          onPress={() => {
+            navigation.navigate("Quizzes");
+          }}
+        >
+          <Text style={styles.retryButtonText}>Try Again</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
+  if (err) {
+    return (
+      <View style={styles.centered}>
+        <AntDesign name="warning" size={64} color="red" />
+        <Text style={styles.errorText}>
+          Error fetching quiz data. Please try again.
+        </Text>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -43,7 +112,7 @@ const ResultComp: FC = ({ route }) => {
               fadeOut={true}
             />
             <View style={styles.circle}>
-              <Text style={styles.optionText}>{score * 10}</Text>
+              <Text style={styles.optionText}>{finalScore}</Text>
             </View>
           </View>
         </View>
@@ -89,6 +158,38 @@ const styles = StyleSheet.create({
     fontSize: 32,
     fontWeight: "600",
     color: "#37e9bb",
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#1f1147",
+  },
+  loadingText: {
+    marginTop: 10,
+    color: "#37e9bb",
+    fontSize: 18,
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#1f1147",
+  },
+  errorText: {
+    marginTop: 10,
+    color: "red",
+    fontSize: 18,
+  },
+  retryButton: {
+    marginTop: 20,
+    padding: 10,
+    backgroundColor: "#37e9bb",
+    borderRadius: 5,
+  },
+  retryButtonText: {
+    color: "#fff",
+    fontSize: 16,
   },
   textContainer: {
     marginTop: 30,
