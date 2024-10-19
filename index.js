@@ -15,7 +15,7 @@ const pool = new Pool({
   port: 6543,
   database: "postgres",
   user: "postgres.raadqkllepoitoxsseyx",
-  password: "karticjoshi13",
+  password: `${process.env.DB_PASS}`,
 });
 try {
   pool.connect();
