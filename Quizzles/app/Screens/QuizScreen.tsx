@@ -10,6 +10,7 @@ import QuestionModal from "../Components/QuestionModal";
 import { AntDesign } from "@expo/vector-icons";
 
 import { get } from "../Utils/networkreq";
+import { Toast } from "react-native-toast-notifications";
 const QuizScreen = ({ route, navigation }) => {
   const { quizId } = route.params;
   const [quizQuestions, setQuizQuestions] = useState([]);
@@ -36,23 +37,13 @@ const QuizScreen = ({ route, navigation }) => {
     fetchQuizQuestions();
   }, [quizId]);
 
-  if (loading) {
-    return (
-      <View style={styles.centered}>
-        <ActivityIndicator size="large" color="#37e9bb" />
-      </View>
-    );
-  }
-
   if (error) {
-    return (
-      <View style={styles.centered}>
-        <AntDesign name="warning" size={64} color="red" />
-        <Text style={styles.errorText}>
-          Error fetching quiz data. Please try again.
-        </Text>
-      </View>
-    );
+    Toast.show("Something went wrong", {
+      type: "danger",
+      placement: "bottom",
+      duration: 4000,
+      animationType: "zoom-in",
+    });
   }
 
   return (
@@ -71,7 +62,20 @@ const QuizScreen = ({ route, navigation }) => {
         </View>
       </View>
       <View style={{ flex: 1 }}>
-        <QuestionModal questions={quizQuestions} quizID={quizId} />
+        {loading ? (
+          <View style={styles.centered}>
+            <ActivityIndicator size="large" color="#37e9bb" />
+          </View>
+        ) : error ? (
+          <View style={styles.centered}>
+            <AntDesign name="warning" size={64} color="red" />
+            <Text style={styles.errorText}>
+              Error fetching quiz data. Please try again.
+            </Text>
+          </View>
+        ) : (
+          <QuestionModal questions={quizQuestions} quizID={quizId} />
+        )}
       </View>
     </View>
   );

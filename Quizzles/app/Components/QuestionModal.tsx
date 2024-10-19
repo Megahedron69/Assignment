@@ -31,32 +31,31 @@ const QuestionModal: FC = ({ questions, quizID }) => {
   const swiperRef = useRef(null);
 
   useEffect(() => {
-    // Reset progress to 1 when starting a new quiz
     setProgress(1);
 
-    const totalDuration = 10000; // Total duration in milliseconds
-    const decrementInterval = 100; // Interval for updating progress in milliseconds
-    const decrementAmount = decrementInterval / totalDuration; // Calculate how much to decrement each interval
+    const totalDuration = 10000;
+    const decrementInterval = 100;
+    const decrementAmount = decrementInterval / totalDuration;
 
     const intervalId = setInterval(() => {
       setProgress((prevProgress) => {
         const newProgress = Math.max(prevProgress - decrementAmount, 0);
         if (newProgress <= 0) {
-          clearInterval(intervalId); // Clear interval when progress reaches 0
+          clearInterval(intervalId);
           goNext();
         }
         return newProgress;
       });
     }, decrementInterval);
 
-    return () => clearInterval(intervalId); // Cleanup interval on unmount
-  }, [currentIndex]); // Run effect when currentIndex changes
+    return () => clearInterval(intervalId);
+  }, [currentIndex]);
 
   useEffect(() => {
     return () => {
       setCurrentIndex(0);
       setSelectedOptions(new Map());
-      setScore(0); // Reset score when component unmounts
+      setScore(0);
     };
   }, []);
 
@@ -70,7 +69,7 @@ const QuestionModal: FC = ({ questions, quizID }) => {
 
   const finishQuiz = () => {
     navigation.navigate("Result", {
-      score: score, // Pass the current score
+      score: score,
       totalQues: questions.length,
       quizId: quizID,
     });

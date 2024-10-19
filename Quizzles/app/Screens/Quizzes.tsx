@@ -7,6 +7,7 @@ import {
   Text,
   ActivityIndicator,
 } from "react-native";
+import { Toast } from "react-native-toast-notifications";
 import Svg, { Path, Defs, LinearGradient, Stop } from "react-native-svg";
 import { AntDesign } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
@@ -123,15 +124,14 @@ const Quizzes = ({ navigation }) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [err, setErr] = useState<boolean>(false);
   const [quizzes, setQuizzes] = useState<any[] | null>(null);
+
   useEffect(() => {
     const fet = async () => {
       setLoading(true);
       try {
         const resp = await get("/quizzes");
-        if (resp?.status) {
-          setQuizzes(resp.quiz);
-          setErr(false);
-        }
+        setQuizzes(resp);
+        setErr(false);
       } catch (err) {
         setErr(true);
       } finally {
@@ -140,7 +140,14 @@ const Quizzes = ({ navigation }) => {
     };
     fet();
   }, []);
-
+  if (err) {
+    Toast.show("Something went wrong", {
+      type: "danger",
+      placement: "bottom",
+      duration: 4000,
+      animationType: "zoom-in",
+    });
+  }
   return (
     <View style={styles.mainContainer}>
       <View style={styles.header}>

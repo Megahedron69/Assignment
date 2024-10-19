@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, TextInput } from "react-native";
 import * as SplashScreen from "expo-splash-screen";
 import { useFonts } from "expo-font";
 import { ToastProvider } from "react-native-toast-notifications";
@@ -13,6 +13,8 @@ import QuizScreen from "./app/Screens/QuizScreen";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import ResultComp from "./app/Components/ResultComp";
 import { SheetProvider } from "react-native-actions-sheet";
+import * as NavigationBar from "expo-navigation-bar";
+
 import "./app/Utils/sheets";
 SplashScreen.preventAutoHideAsync();
 const Stack = createNativeStackNavigator();
@@ -24,12 +26,41 @@ export default function App() {
   useEffect(() => {
     if (loaded || error) {
       SplashScreen.hideAsync();
+      NavigationBar.setBackgroundColorAsync("#1f1147");
     }
   }, [loaded, error]);
 
   if (!loaded && !error) {
     return null;
   }
+
+  // useEffect(() => {
+
+  // }, []);
+  interface TextWithDefaultProps extends Text {
+    defaultProps?: {
+      style?: { fontFamily?: string };
+    };
+  }
+
+  interface TextInputWithDefaultProps extends TextInput {
+    defaultProps?: {
+      style?: { fontFamily?: string };
+    };
+  }
+
+  (Text as unknown as TextWithDefaultProps).defaultProps =
+    (Text as unknown as TextWithDefaultProps).defaultProps || {};
+  (Text as unknown as TextWithDefaultProps).defaultProps!.style = {
+    ...(Text as unknown as TextWithDefaultProps).defaultProps!.style,
+    fontFamily: "Nunito",
+  };
+  (TextInput as unknown as TextInputWithDefaultProps).defaultProps =
+    (TextInput as unknown as TextInputWithDefaultProps).defaultProps || {};
+  (TextInput as unknown as TextInputWithDefaultProps).defaultProps!.style = {
+    ...(TextInput as unknown as TextInputWithDefaultProps).defaultProps!.style,
+    fontFamily: "Nunito",
+  };
 
   return (
     <View style={styles.container}>

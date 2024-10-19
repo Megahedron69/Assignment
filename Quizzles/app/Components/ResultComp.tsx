@@ -82,7 +82,7 @@ const ResultComp: FC = ({ route }) => {
         <TouchableOpacity
           style={styles.backButton}
           onPress={() => {
-            navigation.navigate("Leaderboards");
+            navigation.navigate("Leaderboard", { quizID: quizId });
           }}
         >
           <AntDesign name="Trophy" size={32} color="gold" />
@@ -98,21 +98,21 @@ const ResultComp: FC = ({ route }) => {
         </Text>
       </View>
       <View style={styles.scoreBox}>
-        <View
-          style={styles.gradientBox} // Ensure the gradient covers the full box
-        >
+        <View style={styles.gradientBox}>
           <Text style={styles.head}>Your final score is</Text>
           <View style={styles.circleContainer}>
             <ConfettiCannon
               count={200}
-              origin={{ x: -10, y: 0 }}
+              origin={{ x: 10, y: 0 }}
               explosionSpeed={450}
               autoStartDelay={1}
               fallSpeed={5000}
               fadeOut={true}
             />
             <View style={styles.circle}>
-              <Text style={styles.optionText}>{finalScore}</Text>
+              <Text style={styles.optionText}>
+                {finalScore ? finalScore : score * 10}
+              </Text>
             </View>
           </View>
         </View>

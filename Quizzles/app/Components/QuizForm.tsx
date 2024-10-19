@@ -7,11 +7,13 @@ import {
   StyleSheet,
   Alert,
 } from "react-native";
-import { ScrollView } from "react-native-actions-sheet";
+import { ScrollView, SheetManager } from "react-native-actions-sheet";
 import { Formik } from "formik";
 import * as Yup from "yup";
-import { useToast } from "react-native-toast-notifications";
+import { Toast } from "react-native-toast-notifications";
 import { post } from "../Utils/networkreq";
+import { useNavigation } from "@react-navigation/native";
+
 const QuestionSchema = Yup.object().shape({
   quizName: Yup.string().required("Quiz name is required"),
   totalQuestions: Yup.number()
@@ -22,9 +24,7 @@ const QuestionSchema = Yup.object().shape({
     .of(
       Yup.object().shape({
         questionText: Yup.string().required("Question text is required"),
-        imageUrl: Yup.string()
-          .url("Must be a valid URL")
-          .required("Image URL is required"),
+        imageUrl: Yup.string().required("Image Prompt is required"),
         options: Yup.array()
           .of(
             Yup.object().shape({
@@ -40,6 +40,7 @@ const QuestionSchema = Yup.object().shape({
 });
 
 const QuizForm = () => {
+  const navigation = useNavigation();
   const initialQuestions = [
     {
       questionText: "",
@@ -55,17 +56,17 @@ const QuizForm = () => {
   ];
 
   const handleSubmit = async (values) => {
-    const toast = useToast();
-
-    // Transforming the state to the required JSON structure
     const questionsArray = values.questions.map((question, index) => ({
-      questionId: String(index + 1), // Assuming questionId is simply the index + 1
+      questionId: String(index + 1),
       questionText: question.questionText,
       imageUrl:
-        "https://image.pollinations.ai/prompt/" +
-        question.imageText.replace(/\s+/g, "-"),
+        "https://dummyimage.com/600x400/000/fff&text=" +
+        question.imageUrl
+          .split(" ")
+          .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
+          .join("+"),
       options: question.options.map((option, optionIndex) => ({
-        optionId: String(optionIndex + 1), // Assuming optionId is simply the index + 1
+        optionId: String(optionIndex + 1),
         optionText: option.optionText,
       })),
       correctOptionId: question.correctOptionId,
@@ -79,12 +80,13 @@ const QuizForm = () => {
       });
 
       if (response) {
-        toast.show("Quiz submitted successfully!", { type: "success" });
+        Toast.show("Quiz submitted successfully!", { type: "success" });
+        SheetManager.hide("example-sheet");
       } else {
-        toast.show("Failed to submit quiz", { type: "danger" });
+        Toast.show("Failed to submit quiz", { type: "danger" });
       }
     } catch (error) {
-      toast.show("An error occurred: " + error.message, { type: "danger" });
+      Toast.show("An error occurred: " + error.message, { type: "danger" });
     }
   };
 
@@ -255,9 +257,10 @@ const styles = StyleSheet.create({
     textShadowColor: "black",
     textShadowOffset: {
       width: 1,
-      height: 0,
+      height: 1,
     },
-    textShadowRadius: 2,
+    textShadowRadius: 4,
+    fontWeight: "600",
   },
   button: {
     backgroundColor: "#6949fd",
@@ -299,7 +302,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#6949fd",
     borderRadius: 24,
-    backgroundColor: "#f2f2f2",
+    backgroundColor: "#e0e0e0",
     shadowColor: "#000",
     shadowOffset: {
       width: 0,

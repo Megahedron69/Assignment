@@ -4,7 +4,6 @@ import { Dropdown } from "react-native-element-dropdown";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import OptionCircle from "./OptionCircle";
 
-import { Toast } from "react-native-toast-notifications";
 const data = [
   { label: "Item 1", value: "1" },
   { label: "Item 2", value: "2" },
