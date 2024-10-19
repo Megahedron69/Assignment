@@ -12,13 +12,15 @@
       "backgroundColor": "#1f1147"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.megahedron69.Quizzles"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#1f1147"
-      }
+      },
+      "package": "com.megahedron69.Quizzles"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -27,9 +29,16 @@
       [
         "expo-font",
         {
-          "fonts": ["path/to/file.ttf"]
+          "fonts": [
+            "./assets/fonts/Nunito.ttf"
+          ]
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "4d8df725-8672-4335-ae80-90ec7ea01b21"
+      }
+    }
   }
 }
