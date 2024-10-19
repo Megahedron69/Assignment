@@ -82,7 +82,7 @@ const ResultComp: FC = ({ route }) => {
         <TouchableOpacity
           style={styles.backButton}
           onPress={() => {
-            navigation.navigate("Leaderboard", { quizID: quizId });
+            navigation.navigate("Leaderboard");
           }}
         >
           <AntDesign name="Trophy" size={32} color="gold" />
@@ -134,6 +134,11 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#1f1147",
     paddingTop: 50,
+  },
+  centered: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
   },
   header: {
     width: "100%",
@@ -229,11 +234,11 @@ const styles = StyleSheet.create({
     marginTop: 40,
     marginLeft: 40,
     marginBottom: 40,
-    backgroundColor: "#6949fd", // In case gradient fails, fallback background
+    backgroundColor: "#6949fd",
   },
   gradientBox: {
     flex: 1,
-    width: "100%", // Make the gradient fill the scoreBox
+    width: "100%",
     borderRadius: 25,
     padding: 20,
     justifyContent: "center",
@@ -243,16 +248,16 @@ const styles = StyleSheet.create({
   head: {
     fontWeight: "700",
     fontSize: 28,
-    color: "#FFFFFF", // White color for the text
+    color: "#FFFFFF",
     textAlign: "center",
-    marginBottom: 20, // Adjust spacing between title and circle
+    marginBottom: 20,
     zIndex: 10,
   },
   circleContainer: {
     zIndex: 10,
   },
   circle: {
-    width: 200, // Adjust size of the circle
+    width: 200,
     height: 200,
     borderRadius: 100,
     backgroundColor: "gold",
@@ -272,7 +277,7 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     fontWeight: "bold",
     zIndex: 10,
-    fontSize: 64, // Bigger font for the score
+    fontSize: 64,
   },
   playNowButton: {
     backgroundColor: "#6949FD",

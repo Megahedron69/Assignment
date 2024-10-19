@@ -15,11 +15,11 @@ import { SheetManager } from "react-native-actions-sheet";
 import { get } from "../Utils/networkreq";
 
 const gradientColors = [
-  { light: "#FFA500", dark: "#FF8C00" }, // Orange
-  { light: "#ADD8E6", dark: "#0000FF" }, // Blue
-  { light: "#DDA0DD", dark: "#800080" }, // Purple
-  { light: "#90EE90", dark: "#008000" }, // Green
-  { light: "#FFB6C1", dark: "#FF1493" }, // Pink
+  { light: "#FFA500", dark: "#FF8C00" },
+  { light: "#ADD8E6", dark: "#0000FF" },
+  { light: "#DDA0DD", dark: "#800080" },
+  { light: "#90EE90", dark: "#008000" },
+  { light: "#FFB6C1", dark: "#FF1493" },
 ];
 
 const getGradient = (index: number) => {
@@ -62,7 +62,7 @@ const PentagonButton: FC<PentagonBut> = ({ index, quiz }) => {
         navigation.navigate("Quiz", {
           quizId: quiz.quizID,
           quizName: quiz.quizName,
-        }); // Pass quizId and quizName
+        });
       }}
     >
       <Svg height="160" width="160">
@@ -231,8 +231,8 @@ const styles = StyleSheet.create({
   icon: {
     position: "absolute",
     color: "#FFD700",
-    textShadowColor: "black", // Gold shadow color
-    textShadowOffset: { width: 0, height: 0 }, // No offset, directly behind the icon
+    textShadowColor: "black",
+    textShadowOffset: { width: 0, height: 0 },
     textShadowRadius: 4,
   },
   topLeft: {

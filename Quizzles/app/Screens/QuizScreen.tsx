@@ -12,7 +12,7 @@ import { AntDesign } from "@expo/vector-icons";
 import { get } from "../Utils/networkreq";
 import { Toast } from "react-native-toast-notifications";
 const QuizScreen = ({ route, navigation }) => {
-  const { quizId } = route.params;
+  const { quizId, quizName } = route.params;
   const [quizQuestions, setQuizQuestions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -58,7 +58,7 @@ const QuizScreen = ({ route, navigation }) => {
           <AntDesign name="arrowleft" size={32} color="#fff" />
         </TouchableOpacity>
         <View style={styles.headerTitle}>
-          <Text style={styles.headerText}>Quiz {quizId}</Text>
+          <Text style={styles.headerText}>{quizName}</Text>
         </View>
       </View>
       <View style={{ flex: 1 }}>

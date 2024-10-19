@@ -26,7 +26,7 @@ try {
 
 app.post("/createUser", async (req, res) => {
   const { userName } = req.body;
-  console.log("Received userName:", userName); // Log the received userName
+  console.log("Received userName:", userName);
   if (!userName) {
     return res.status(400).json({ message: "userName is required" });
   }
@@ -140,19 +140,36 @@ app.post("/quizzes", async (req, res) => {
 app.post("/quizzes/:id/submit", async (req, res) => {
   const { userName, score } = req.body;
   const quizId = req.params.id;
+
   console.log(userName, score, quizId);
+
   if (!userName || !score) {
     return res
       .status(400)
       .json({ message: "userName and score are required." });
   }
-  try {
-    const handleNullQuiz = `
-    UPDATE leaderboard
-    SET "quizID" = $1
-    WHERE "quizID" IS NULL AND "userName"=$2`;
 
-    await pool.query(handleNullQuiz, [quizId, userName]);
+  try {
+    const checkUserQuizQuery = `
+      SELECT * FROM leaderboard 
+      WHERE "userName" = $1 AND "quizID" = $2;
+    `;
+    const userQuizResult = await pool.query(checkUserQuizQuery, [
+      userName,
+      quizId,
+    ]);
+
+    if (userQuizResult.rows.length === 0) {
+      const insertUserQuizQuery = `
+        INSERT INTO leaderboard ("userName", "score", "quizID")
+        VALUES ($1, $2, $3)
+        RETURNING *;
+      `;
+      await pool.query(insertUserQuizQuery, [userName, score * 10, quizId]);
+      return res
+        .status(201)
+        .json({ message: "User added to leaderboard for this quiz." });
+    }
 
     const multipliedScore = score * 10;
     const updateScoreQuery = `

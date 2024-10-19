@@ -24,14 +24,14 @@ const Leaderboard: FC = ({ route }) => {
     <View style={styles.item}>
       <Image
         style={styles.avatar}
-        source={{ uri: `https://api.multiavatar.com/${item.userName}` }}
+        source={{ uri: `https://api.multiavatar.com/${item.userName}.png` }}
       />
       <Text style={styles.userName}>{item.userName}</Text>
       <Text style={styles.score}>{item.score}</Text>
     </View>
   );
   useEffect(() => {
-    const quizID = route?.params?.quizID; // Get quizID from route.params
+    const quizID = route?.params?.quizID;
     if (quizID) {
       setSelectedQuiz(quizID);
     }
@@ -57,7 +57,7 @@ const Leaderboard: FC = ({ route }) => {
   }, [selectedQuiz]);
 
   const handleValueChange = (value: string | null) => {
-    setSelectedQuiz(value); // Update the selectedQuiz state
+    setSelectedQuiz(value);
   };
 
   if (err) {
@@ -89,9 +89,14 @@ const Leaderboard: FC = ({ route }) => {
       </View>
       <View style={styles.dataContainer}>
         {loading ? (
-          <ActivityIndicator size="large" color="#37e9bb" />
+          <View style={styles.centered}>
+            <ActivityIndicator size="large" color="#37e9bb" />
+          </View>
         ) : err ? (
-          <AntDesign name="exclamationcircle" size={50} color="grey" />
+          <View style={styles.centered}>
+            <AntDesign name="exclamationcircle" size={50} color="grey" />
+            <Text style={styles.userName}>Empty</Text>
+          </View>
         ) : (
           <FlatList
             data={listData}

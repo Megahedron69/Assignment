@@ -25,19 +25,19 @@ const styles = StyleSheet.create({
   circleContainer: {
     justifyContent: "center",
     alignItems: "center",
-    margin: 10, // Optional margin
+    margin: 10,
   },
   circle: {
-    width: 40, // Set the width of the circle
-    height: 40, // Set the height of the circle
-    borderRadius: 20, // Half of width/height to create a circle
+    width: 40,
+    height: 40,
+    borderRadius: 20,
     justifyContent: "center",
     alignItems: "center",
   },
   optionText: {
-    color: "#FFFFFF", // White color for the text
-    fontWeight: "bold", // Heavy bold font
-    fontSize: 18, // Set the font size as needed
+    color: "#FFFFFF",
+    fontWeight: "bold",
+    fontSize: 18,
   },
 });
 

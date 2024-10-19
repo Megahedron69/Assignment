@@ -6,21 +6,20 @@ import {
   Dimensions,
   TouchableOpacity,
   Image,
-  Animated,
 } from "react-native";
 import { SwiperFlatList } from "react-native-swiper-flatlist";
 import OptionCircle from "./OptionCircle";
 import { useNavigation } from "@react-navigation/native";
 import * as Progress from "react-native-progress";
 
-const { width } = Dimensions.get("window"); // Get screen width
+const { width } = Dimensions.get("window");
 
 type QuestionModal = {
-  quizId: number;
+  quizID: number;
   questions: any[];
 };
 
-const QuestionModal: FC = ({ questions, quizID }) => {
+const QuestionModal: FC<QuestionModal> = ({ questions, quizID }) => {
   const navigation = useNavigation();
   const [progress, setProgress] = useState(1);
   const [currentIndex, setCurrentIndex] = useState<number>(0);
@@ -93,7 +92,6 @@ const QuestionModal: FC = ({ questions, quizID }) => {
       new Map(prev).set(currentIndex, { chosen: chosenOptionId, isCorrect })
     );
 
-    // Increment the score if the selected answer is correct
     if (isCorrect) {
       setScore((prevScore) => prevScore + 1);
     }
@@ -101,17 +99,17 @@ const QuestionModal: FC = ({ questions, quizID }) => {
 
   const isAnswerSelected = (index: number, optionId: number) => {
     const selection = selectedOptions.get(index);
-    return selection ? selection.chosen === optionId : false; // Check if this option was selected
+    return selection ? selection.chosen === optionId : false;
   };
 
   const getButtonStyle = (index: number, optionId: number) => {
     const selection = selectedOptions.get(index);
     if (selection) {
       if (selection.chosen === optionId) {
-        return selection.isCorrect ? "#37e9bb" : "#ff4c4c"; // Correct or Incorrect color
+        return selection.isCorrect ? "#37e9bb" : "#ff4c4c";
       }
     }
-    return "#1f1147"; // Default color
+    return "#1f1147";
   };
 
   return (
@@ -125,7 +123,10 @@ const QuestionModal: FC = ({ questions, quizID }) => {
             <View style={styles.questionContainer}>
               <Text style={styles.questionCounter}>
                 {item.questionId < 10 ? `0${item.questionId}` : item.questionId}
-                /{questions.length}
+                /
+                {questions.length < 10
+                  ? `0${questions.length}`
+                  : questions.length}
               </Text>
               <Text
                 style={styles.question}
@@ -153,7 +154,7 @@ const QuestionModal: FC = ({ questions, quizID }) => {
                         index,
                         parseInt(option.optionId, 10)
                       ),
-                      opacity: selectedOptions.has(index) ? 0.5 : 1, // Change opacity if option has been selected
+                      opacity: selectedOptions.has(index) ? 0.5 : 1,
                     },
                   ]}
                   onPress={() => {
@@ -161,7 +162,7 @@ const QuestionModal: FC = ({ questions, quizID }) => {
                       handleAnswerClick(parseInt(option.optionId, 10));
                     }
                   }}
-                  disabled={selectedOptions.has(index)} // Disable button if an option is selected
+                  disabled={selectedOptions.has(index)}
                 >
                   <OptionCircle optionNumber={option.optionId} />
                   <Text

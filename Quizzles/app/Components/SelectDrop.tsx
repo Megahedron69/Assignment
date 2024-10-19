@@ -5,14 +5,14 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import OptionCircle from "./OptionCircle";
 
 const data = [
-  { label: "Item 1", value: "1" },
-  { label: "Item 2", value: "2" },
-  { label: "Item 3", value: "3" },
-  { label: "Item 4", value: "4" },
-  { label: "Item 5", value: "5" },
-  { label: "Item 6", value: "6" },
-  { label: "Item 7", value: "7" },
-  { label: "Item 8", value: "8" },
+  { label: "Solar System", value: "1" },
+  { label: "World Capitals", value: "2" },
+  { label: "Ancient Rome", value: "3" },
+  { label: "Quiz 4", value: "4" },
+  { label: "Quiz 5", value: "5" },
+  { label: "Quiz 6", value: "6" },
+  { label: "Quiz 7", value: "7" },
+  { label: "Quiz 8", value: "8" },
 ];
 type data = {
   label: string;
@@ -30,7 +30,7 @@ const DropdownComponent: FC<dropDownProps> = ({ onValueChange }) => {
   const renderItem = (item) => {
     return (
       <View style={styles.item}>
-        <OptionCircle optionNumber={5} />
+        <OptionCircle optionNumber={parseInt(item.value)} />
         <Text style={styles.selectedTextStyle}>{item.label}</Text>
       </View>
     );

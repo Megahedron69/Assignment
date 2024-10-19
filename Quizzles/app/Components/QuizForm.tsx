@@ -1,18 +1,16 @@
-import React, { useState } from "react";
+import type { FC } from "react";
 import {
   View,
   Text,
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  Alert,
 } from "react-native";
 import { ScrollView, SheetManager } from "react-native-actions-sheet";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import { Toast } from "react-native-toast-notifications";
 import { post } from "../Utils/networkreq";
-import { useNavigation } from "@react-navigation/native";
 
 const QuestionSchema = Yup.object().shape({
   quizName: Yup.string().required("Quiz name is required"),
@@ -31,16 +29,15 @@ const QuestionSchema = Yup.object().shape({
               optionText: Yup.string().required("Option text is required"),
             })
           )
-          .length(4, "Must have exactly 4 options") // Must have exactly 4 options
+          .length(4, "Must have exactly 4 options")
           .required("Options are required"),
-        correctOptionId: Yup.string().required("Correct option is required"),
+        correctOptionId: Yup.number().required("Correct option ID is required"),
       })
     )
     .required("Questions are required"),
 });
 
-const QuizForm = () => {
-  const navigation = useNavigation();
+const QuizForm: FC = () => {
   const initialQuestions = [
     {
       questionText: "",
@@ -55,7 +52,7 @@ const QuizForm = () => {
     },
   ];
 
-  const handleSubmit = async (values) => {
+  const handleSubmit = async (values: any[]) => {
     const questionsArray = values.questions.map((question, index) => ({
       questionId: String(index + 1),
       questionText: question.questionText,
@@ -121,7 +118,6 @@ const QuizForm = () => {
               ],
               correctOptionId: "",
             };
-            // Update the questions and totalQuestions in Formik state
             setFieldValue("questions", [...values.questions, newQuestion]);
             setFieldValue("totalQuestions", values.questions.length + 1);
           };
@@ -145,8 +141,8 @@ const QuizForm = () => {
                 placeholderTextColor={"#736f73"}
                 style={styles.input}
                 keyboardType="numeric"
-                editable={false} // Disable input
-                value={String(values.questions.length)} // Show the current number of questions
+                editable={false}
+                value={String(values.questions.length)}
               />
               {errors.totalQuestions && (
                 <Text style={styles.error}>{errors.totalQuestions}</Text>

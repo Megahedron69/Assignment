@@ -34,9 +34,6 @@ export default function App() {
     return null;
   }
 
-  // useEffect(() => {
-
-  // }, []);
   interface TextWithDefaultProps extends Text {
     defaultProps?: {
       style?: { fontFamily?: string };
@@ -118,10 +115,10 @@ export default function App() {
               </Stack.Navigator>
 
               <StatusBar
-                style="auto"
+                style="light"
                 animated={true}
                 translucent={true}
-                backgroundColor="transparent"
+                backgroundColor="#1f1147"
               />
             </SheetProvider>
           </NavigationContainer>

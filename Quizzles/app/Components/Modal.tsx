@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
   modalText: {
     fontSize: 18,
     marginBottom: 20,
-    color: "#6949FD", // Accent color for text
+    color: "#6949FD",
     fontWeight: "bold",
   },
   input: {
@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#6949FD",
     marginBottom: 20,
-    backgroundColor: "#F3F3F3", // Light background for input
+    backgroundColor: "#F3F3F3",
   },
   modalButtons: {
     flexDirection: "row",
@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   buttonText: {
-    color: "#32167c", // Accent color for button text
+    color: "#32167c",
     textAlign: "center",
     fontSize: 16,
     fontWeight: "bold",
